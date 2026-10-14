@@ -12,6 +12,7 @@ Write a JavaScript function that reverses a string, properly handling Unicode ch
 |------|--------|
 | `grok-4-6.js` | Grok 4.6 |
 | `composer-2-5.js` | Composer 2.5 |
+| `auto.js` | Cursor Auto (named models unavailable on this plan) |
 
 ## Approach (`grok-4-6.js`)
 
@@ -55,3 +56,15 @@ Same grapheme-cluster strategy, split into `reverseString` and `splitGraphemes`:
 3. Fall back to `Array.from(str)` for code points when Segmenter is missing.
 
 Also notes unpaired/malformed UTF-16 surrogates: they are preserved rather than repaired. Complexity is **O(n)** time and **O(n)** space.
+
+## Approach (`auto.js`)
+
+Third comparison used **Cursor Auto** because named models (Claude, Gemini, GPT, Grok 4.7, etc.) were blocked on a Free plan.
+
+Differences from the other two files:
+
+1. Coerces `null` / `undefined` to `""` and non-strings via `String(input)` instead of throwing `TypeError`.
+2. Uses a `for...of` loop over `Intl.Segmenter` instead of spreading segments into an array.
+3. No `Array.from` fallback if `Intl.Segmenter` is missing.
+
+Same **O(n)** time and **O(n)** space grapheme-cluster reverse.
