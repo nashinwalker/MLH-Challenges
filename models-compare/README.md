@@ -11,6 +11,7 @@ Write a JavaScript function that reverses a string, properly handling Unicode ch
 | File | Model |
 |------|--------|
 | `grok-4-6.js` | Grok 4.6 |
+| `composer-2-5.js` | Composer 2.5 |
 
 ## Approach (`grok-4-6.js`)
 
@@ -44,3 +45,13 @@ JavaScript strings are UTF-16. Emoji outside the BMP use **surrogate pairs**. Fa
 **O(n) time, O(n) space**, where *n* is the string length in UTF-16 code units.
 
 Segmenting, reversing the grapheme array, and joining are all linear. Extra space is needed for the segment array; in-place reverse is not practical because graphemes have unequal UTF-16 width.
+
+## Approach (`composer-2-5.js`)
+
+Same grapheme-cluster strategy, split into `reverseString` and `splitGraphemes`:
+
+1. Reject non-strings; return `''` immediately for empty input.
+2. Prefer `Intl.Segmenter` (locale `undefined`, `granularity: "grapheme"`).
+3. Fall back to `Array.from(str)` for code points when Segmenter is missing.
+
+Also notes unpaired/malformed UTF-16 surrogates: they are preserved rather than repaired. Complexity is **O(n)** time and **O(n)** space.
